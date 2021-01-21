@@ -64,21 +64,27 @@ export const useMultipleFileUploader = () => {
 
     setFileStates(fileStates);
 
-    configs.map(({ url, file, cancelToken }, index) => {
+    configs.map(async ({ url, file, cancelToken }, index) => {
+      const fileState = fileStates[index];
       const formData = new FormData();
 
       formData.append("file", file);
 
-      axios
-        .post(url, formData, {
+      try {
+        const { data } = await axios.post(url, formData, {
           cancelToken,
-        })
-        .then(({ data }) => {
-          setFileState(fileStates[index].id, {
-            status: FileStateStatus.UPLOAD_SUCCESS,
-            data,
-          });
         });
+
+        setFileState(fileState.id, {
+          status: FileStateStatus.UPLOAD_SUCCESS,
+          data,
+        });
+      } catch (error) {
+        setFileState(fileState.id, {
+          status: FileStateStatus.UPLOAD_ERROR,
+          error,
+        });
+      }
     });
   };
 

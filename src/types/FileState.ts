@@ -17,6 +17,7 @@ export type FileState = {
   url: string;
 
   data?: any;
+  error?: any;
 
   abort: () => void;
 };
