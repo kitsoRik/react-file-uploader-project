@@ -3,29 +3,26 @@ import axios from "axios";
 import { FileState, FileStateStatus } from "../../types/FileState";
 import { FileConfig } from "../../types/FileConfig";
 
-const createFileConfigs = (files: FileList | File[]): FileConfig[] => {
-  return Array.from(files).map((file) => {
-    const { cancel, token: cancelToken } = axios.CancelToken.source();
+const createFileConfig = (file: File): FileConfig => {
+  const { cancel, token: cancelToken } = axios.CancelToken.source();
 
-    return {
-      url: "http://localhost:4000/upload",
-      file,
-      cancelToken,
-      abort: () => {
-        console.log("C");
-        cancel();
-      },
-    };
-  });
+  return {
+    url: "http://localhost:4000/upload",
+    file,
+    cancelToken,
+    abort: () => {
+      console.log("C");
+      cancel();
+    },
+  };
 };
 
-const createFileStates = (files: FileList | File[], configs: FileConfig[]) => {
+const createFileStates = (files: FileList | File[]) => {
   const fileStates: FileState[] = [];
 
   for (let i = 0; i < files.length; i++) {
     const id = `${i}`;
     const file = files[i];
-    const config = configs[i];
 
     const url = URL.createObjectURL(file);
 
@@ -34,11 +31,12 @@ const createFileStates = (files: FileList | File[], configs: FileConfig[]) => {
       status: FileStateStatus.UPLOADING,
 
       file,
-      config,
 
       url,
 
-      abort: () => config.abort(),
+      abort: () => {},
+
+      upload: () => {},
     });
   }
 
@@ -59,32 +57,41 @@ export const useMultipleFileUploader = () => {
   };
 
   const upload = (files: FileList | File[]) => {
-    const configs = createFileConfigs(files);
-    const fileStates = createFileStates(files, configs);
+    const fileStates = createFileStates(files);
 
     setFileStates(fileStates);
 
-    configs.map(async ({ url, file, cancelToken }, index) => {
+    fileStates.forEach(async ({ file }, index) => {
       const fileState = fileStates[index];
       const formData = new FormData();
 
       formData.append("file", file);
 
-      try {
-        const { data } = await axios.post(url, formData, {
-          cancelToken,
-        });
+      const uploadFile = async () => {
+        try {
+          const { url, cancelToken, abort } = createFileConfig(file);
 
-        setFileState(fileState.id, {
-          status: FileStateStatus.UPLOAD_SUCCESS,
-          data,
-        });
-      } catch (error) {
-        setFileState(fileState.id, {
-          status: FileStateStatus.UPLOAD_ERROR,
-          error,
-        });
-      }
+          setFileState(fileState.id, {
+            status: FileStateStatus.UPLOADING,
+            upload: uploadFile,
+            abort,
+          });
+          const { data } = await axios.post(url, formData, {
+            cancelToken,
+          });
+          setFileState(fileState.id, {
+            status: FileStateStatus.UPLOAD_SUCCESS,
+            data,
+          });
+        } catch (error) {
+          setFileState(fileState.id, {
+            status: FileStateStatus.UPLOAD_ERROR,
+            error,
+          });
+        }
+      };
+
+      await uploadFile();
     });
   };
 

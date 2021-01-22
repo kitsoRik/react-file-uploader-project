@@ -5,6 +5,7 @@ export enum FileStateStatus {
   UPLOADING,
   UPLOAD_SUCCESS,
   UPLOAD_ERROR,
+  CANCELED,
 }
 
 export type FileState = {
@@ -12,7 +13,7 @@ export type FileState = {
   status: FileStateStatus;
 
   file: File;
-  config: FileConfig;
+  config?: FileConfig;
 
   url: string;
 
@@ -20,4 +21,5 @@ export type FileState = {
   error?: any;
 
   abort: () => void;
+  upload: () => void;
 };
