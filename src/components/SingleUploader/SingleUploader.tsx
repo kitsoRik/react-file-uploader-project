@@ -14,14 +14,14 @@ const SingleUploader = () => {
 
   if (!fileState) return input;
 
-  const { id, status, abort, upload: uploadAgain } = fileState;
+  const { id, status, abort, file, upload: uploadAgain } = fileState;
 
   return (
     <>
       <FileAlert
         index={1}
         key={id}
-        name="string.png"
+        name={file.name}
         type="default"
         isLoading={status === FileStateStatus.UPLOADING}
         isTryMore={[

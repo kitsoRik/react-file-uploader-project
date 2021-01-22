@@ -7,11 +7,11 @@ const MultipleUploader = () => {
 
   return (
     <>
-      {fileStates.map(({ id, status, abort, upload }, index) => (
+      {fileStates.map(({ id, status, abort, upload, file }, index) => (
         <FileAlert
           index={index}
           key={id}
-          name="string.png"
+          name={file.name}
           type="default"
           isLoading={status === FileStateStatus.UPLOADING}
           isTryMore={[
