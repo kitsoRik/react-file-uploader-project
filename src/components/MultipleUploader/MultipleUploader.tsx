@@ -1,14 +1,37 @@
-interface Props {
-  onUpload: (file: FileList) => void;
-}
+import { useMultipleFileUploader } from "../../hooks/useMultipleFileUploader";
+import { FileStateStatus } from "../../types/FileState";
+import FileAlert from "../FileAlert";
 
-const MultipleUploader = ({ onUpload }: Props) => {
+const MultipleUploader = () => {
+  const { fileStates, upload } = useMultipleFileUploader();
+
   return (
-    <input
-      type="file"
-      multiple={true}
-      onChange={(e) => e.target.files && onUpload(e.target.files)}
-    />
+    <div className="App">
+      {fileStates.map(({ id, status, abort, upload }, index) => (
+        <FileAlert
+          index={index}
+          key={id}
+          name="string.png"
+          type="default"
+          isLoading={status === FileStateStatus.UPLOADING}
+          isTryMore={[
+            FileStateStatus.UPLOAD_ERROR,
+            FileStateStatus.CANCELED,
+          ].includes(status)}
+          isCancel={status === FileStateStatus.UPLOADING}
+          isError={status === FileStateStatus.UPLOAD_ERROR}
+          isCanceled={status === FileStateStatus.CANCELED}
+          isSuccess={status === FileStateStatus.UPLOAD_SUCCESS}
+          onCancel={abort}
+          onTryMore={upload}
+        />
+      ))}
+      <input
+        type="file"
+        multiple={true}
+        onChange={(e) => e.target.files && upload(e.target.files)}
+      />
+    </div>
   );
 };
 
