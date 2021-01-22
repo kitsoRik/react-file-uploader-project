@@ -85,7 +85,10 @@ export const useMultipleFileUploader = () => {
           });
         } catch (error) {
           setFileState(fileState.id, {
-            status: FileStateStatus.UPLOAD_ERROR,
+            status:
+              error instanceof axios.Cancel
+                ? FileStateStatus.CANCELED
+                : FileStateStatus.UPLOAD_ERROR,
             error,
           });
         }

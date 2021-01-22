@@ -7,7 +7,11 @@ interface Props {
 
   isTryMore: boolean;
   isCancel: boolean;
+
   isLoading: boolean;
+  isError: boolean;
+  isCanceled: boolean;
+  isSuccess: boolean;
 
   onTryMore: () => void;
   onCancel: () => void;
@@ -19,7 +23,11 @@ const FileAlert = ({
   type,
   isTryMore,
   isCancel,
+
   isLoading,
+  isError,
+  isCanceled,
+  isSuccess,
 
   onCancel,
   onTryMore,
@@ -28,6 +36,9 @@ const FileAlert = ({
     <div className={classes.fileAlert} attr-type={type}>
       {index}) {name}
       {isLoading && <span>Loading</span>}
+      {isError && <span>Error</span>}
+      {isCanceled && <span>Canceled</span>}
+      {isSuccess && <span>Success</span>}
       {isCancel && (
         <button className={classes.action} attr-type="error" onClick={onCancel}>
           Cancel

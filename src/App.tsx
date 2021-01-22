@@ -20,6 +20,9 @@ function App() {
             FileStateStatus.CANCELED,
           ].includes(status)}
           isCancel={status === FileStateStatus.UPLOADING}
+          isError={status === FileStateStatus.UPLOAD_ERROR}
+          isCanceled={status === FileStateStatus.CANCELED}
+          isSuccess={status === FileStateStatus.UPLOAD_SUCCESS}
           onCancel={abort}
           onTryMore={upload}
         />
