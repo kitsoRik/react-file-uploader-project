@@ -6,7 +6,7 @@ const MultipleUploader = () => {
   const { fileStates, upload } = useMultipleFileUploader();
 
   return (
-    <div className="App">
+    <>
       {fileStates.map(({ id, status, abort, upload }, index) => (
         <FileAlert
           index={index}
@@ -31,7 +31,7 @@ const MultipleUploader = () => {
         multiple={true}
         onChange={(e) => e.target.files && upload(e.target.files)}
       />
-    </div>
+    </>
   );
 };
 

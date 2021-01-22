@@ -1,8 +1,12 @@
 import "./App.css";
-import MultipleUploader from "./components/MultipleUploader";
+import SingleUploader from "./components/SingleUploader";
 
 function App() {
-  return <MultipleUploader />;
+  return (
+    <div className="App">
+      <SingleUploader />
+    </div>
+  );
 }
 
 export default App;
