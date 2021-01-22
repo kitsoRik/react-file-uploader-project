@@ -29,6 +29,7 @@ function App() {
       ))}
       <input
         type="file"
+        multiple={true}
         onChange={(e) => e.target.files && upload(e.target.files)}
       />
       123
