@@ -1,5 +1,6 @@
 import "./App.css";
 import FileAlert from "./components/FileAlert";
+import MultipleUploader from "./components/MultipleUploader";
 import { useMultipleFileUploader } from "./hooks/useMultipleFileUploader";
 import { FileStateStatus } from "./types/FileState";
 
@@ -27,12 +28,7 @@ function App() {
           onTryMore={upload}
         />
       ))}
-      <input
-        type="file"
-        multiple={true}
-        onChange={(e) => e.target.files && upload(e.target.files)}
-      />
-      123
+      <MultipleUploader onUpload={upload} />
     </div>
   );
 }
